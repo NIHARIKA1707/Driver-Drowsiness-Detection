@@ -21,7 +21,7 @@ st.set_page_config(
 # SETTINGS
 # ============================================================
 
-MODEL_PATH = Path(__file__).parent / "EfficientNet_B0.keras"
+MODEL_PATH = Path(__file__).parent / "EfficientNet_B0(2).keras"
 
 IMG_SIZE = (224, 224)
 
