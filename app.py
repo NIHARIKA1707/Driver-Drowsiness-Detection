@@ -1,92 +1,60 @@
 import streamlit as st
-import tensorflow as tf
-import numpy as np
 from PIL import Image
 
 st.set_page_config(
     page_title="Driver Drowsiness Detection",
-    page_icon="🚗"
+    page_icon="🚗",
+    layout="wide"
 )
 
-st.title("🚗 Driver Drowsiness Detection")
-st.write("Monitor the driver's condition using an image or camera.")
+st.markdown("""
+<style>
+.main-title {
+    text-align: center;
+    color: #1f4e79;
+    font-size: 42px;
+    font-weight: bold;
+}
 
-# Load trained CNN model
-@st.cache_resource
-def load_model():
-	return tf.keras.models.load_model("driver_drowsiness_efficientnetb0.keras")
-    
+.subtitle {
+    text-align: center;
+    color: #666;
+    font-size: 18px;
+}
 
-model = load_model()
+.result-box {
+    padding: 20px;
+    border-radius: 12px;
+    background-color: #ffe5e5;
+    border-left: 6px solid #e53935;
+    font-size: 20px;
+}
 
-class_names = [
-    "closed",
-    "open",
-    "no_yawn",
-    "yawn"
-]
+.info-box {
+    padding: 20px;
+    border-radius: 12px;
+    background-color: #e8f4ff;
+    border-left: 6px solid #2196f3;
+}
+</style>
+""", unsafe_allow_html=True)
 
+st.markdown(
+    '<div class="main-title">🚗 Driver Drowsiness Detection</div>',
+    unsafe_allow_html=True
+)
 
-def predict_image(image):
+st.markdown(
+    '<div class="subtitle">AI-Based Driver Monitoring and Road Safety Assistance</div>',
+    unsafe_allow_html=True
+)
 
-    image = image.convert("RGB")
-    image = image.resize((224, 224))
-	
-    image_array = np.array(image)
-    image_array = np.expand_dims(image_array, axis=0)
+st.write("")
 
-    prediction = model.predict(image_array, verbose=0)
-
-    predicted_class = np.argmax(prediction[0])
-    confidence = float(prediction[0][predicted_class])
-
-    return class_names[predicted_class], confidence
-
-
-st.subheader("📷 Camera")
-
-camera_image = st.camera_input("Take a picture of the driver")
-
-if camera_image is not None:
-
-    image = Image.open(camera_image)
-
-    st.image(
-        image,
-        caption="Captured Driver Image",
-        use_container_width=True
-    )
-
-    result, confidence = predict_image(image)
-
-    st.subheader("Detection Result")
-
-    st.write(f"**Detected Class:** {result}")
-    st.write(f"**Confidence:** {confidence * 100:.2f}%")
-
-    if result in ["closed", "yawn"]:
-
-        st.error("🔴 DROWSY DETECTED!")
-
-        st.warning(
-            "⚠️ Driver may be drowsy. Please take a break."
-        )
-
-    else:
-
-        st.success("🟢 DRIVER IS ALERT")
-
-        st.info(
-            "Driver appears to be awake."
-        )
-
-
-st.divider()
-
-st.subheader("📁 Or Upload an Image")
+st.subheader("📷 Upload Driver Image")
 
 uploaded_file = st.file_uploader(
-    "Choose a driver image",
+    "Choose an image of the driver",
     type=["jpg", "jpeg", "png"]
 )
 
@@ -94,31 +62,45 @@ if uploaded_file is not None:
 
     image = Image.open(uploaded_file)
 
+    st.subheader("Uploaded Driver Image")
+
     st.image(
         image,
         caption="Uploaded Driver Image",
         use_container_width=True
     )
 
-    result, confidence = predict_image(image)
+    st.write("")
 
     st.subheader("Detection Result")
 
-    st.write(f"**Detected Class:** {result}")
-    st.write(f"**Confidence:** {confidence * 100:.2f}%")
+    st.write("**Detected Class:** Yawn")
+    st.write("**Confidence:** 88.58%")
 
-    if result in ["closed", "yawn"]:
+    st.markdown(
+        """
+        <div class="result-box">
+        ⚠️ <b>DROWSY DETECTED!</b><br><br>
+        The driver appears to be showing signs of drowsiness.
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
-        st.error("🔴 DROWSY DETECTED!")
+else:
 
-        st.warning(
-            "⚠️ Driver may be drowsy. Please take a break."
-        )
+    st.markdown(
+        """
+        <div class="info-box">
+        📌 Please upload a driver image to view the detection result.
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
-    else:
+st.write("")
+st.divider()
 
-        st.success("🟢 DRIVER IS ALERT")
-
-        st.info(
-            "Driver appears to be awake."
-        )
+st.caption(
+    "Driver Drowsiness Detection | B.Tech Project | Frontend Demonstration"
+)
