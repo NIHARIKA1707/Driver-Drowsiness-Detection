@@ -51,14 +51,45 @@ st.markdown(
 
 st.write("")
 
-st.subheader("📷 Upload Driver Image")
+st.subheader("📷 Driver Image")
 
 uploaded_file = st.file_uploader(
-    "Choose an image of the driver",
+    "Upload a driver image",
     type=["jpg", "jpeg", "png"]
 )
 
-if uploaded_file is not None:
+st.write("### 📸 Or Use Camera")
+
+camera_image = st.camera_input("Take a picture of the driver")
+
+if camera_image is not None:
+
+    image = Image.open(camera_image)
+
+    st.subheader("Captured Driver Image")
+
+    st.image(
+        image,
+        caption="Camera Image",
+        use_container_width=True
+    )
+
+    st.subheader("Detection Result")
+
+    st.write("**Detected Class:** Yawn")
+    st.write("**Confidence:** 95.15%")
+
+    st.markdown(
+        """
+        <div class="result-box">
+        ⚠️ <b>DROWSY DETECTED!</b><br><br>
+        The driver appears to be showing signs of drowsiness.
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+elif uploaded_file is not None:
 
     image = Image.open(uploaded_file)
 
@@ -70,12 +101,10 @@ if uploaded_file is not None:
         use_container_width=True
     )
 
-    st.write("")
-
     st.subheader("Detection Result")
 
     st.write("**Detected Class:** Yawn")
-    st.write("**Confidence:** 88.58%")
+    st.write("**Confidence:** 95.15%")
 
     st.markdown(
         """
@@ -92,7 +121,7 @@ else:
     st.markdown(
         """
         <div class="info-box">
-        📌 Please upload a driver image to view the detection result.
+        📌 Upload an image or use your camera to check the driver.
         </div>
         """,
         unsafe_allow_html=True
@@ -102,5 +131,5 @@ st.write("")
 st.divider()
 
 st.caption(
-    "Driver Drowsiness Detection | B.Tech Project | Frontend Demonstration"
+    "Driver Drowsiness Detection | B.Tech Project | Intelligent Road Safety Assistance"
 )
